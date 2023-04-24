@@ -38,14 +38,20 @@ def login():
          session['user'] = row[0]
          return redirect('/homepage')
       elif request.form.get('reg') == 'Register':
-         print("Here")
+         command.execute('SELECT * FROM users WHERE username =?', (username,))
+         row = command.fetchone()
+         if row is not None:
+            flash("Username is already taken")
+            return redirect("/")
          command.execute('''INSERT OR IGNORE INTO users (username, password) VALUES (?,?)''', (username, password))
          connect.commit()
          command.execute('SELECT * FROM users WHERE username =? and password =?', (username, password))
          row = command.fetchone()
+         print(row)
          session['user'] = row[0]
          return redirect('/homepage')
       else:
+         flash("Incorrect username or password")
          return redirect('/')
 
 def get_purchased_icon(purchased_db_value):
@@ -58,20 +64,23 @@ def logout():
 
 @app.route('/homepage')
 def homePage():
+   print(session)
    if 'user' in session:
       try: 
          connect = sqlite3.connect('shop_scanner.db')
          connect.row_factory = sqlite3.Row
+         print(session["user"])
 
          command = connect.cursor()
-         command.execute('select * from shop_items WHERE ID =?',(str(session['user'])))
+         command.execute('select * from shop_items WHERE ID =?',(str(session['user']),))
          rows = command.fetchall(); 
-         command.execute('select username from users WHERE ID =?',(str(session['user'])))
+         command.execute('select username from users WHERE ID =?',(str(session['user']),))
          user = command.fetchall()[0]["username"]
 
          return render_template('index.html',ord=ord, rows = rows, username = user, format = format)
       
       except Exception as e:
+         raise e
          return redirect('/')    
 
 @app.route('/refresh_all', methods = ['POST', 'GET'])
