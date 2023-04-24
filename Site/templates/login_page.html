@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="..\static\style_login.css">
+    <script type="text/javascript" src="../static/script.js"></script>
+</head>
+
+<body>
+    <form action="{{ url_for('login') }}" class="login" method="POST">
+        <label for="username" class="label">Username:</label>
+        <input type="text" class="input_f" placeholder="Username" name="username" value="{{request.form.username }}" autocomplete="off" required>
+        <label for="password" class="label">Password:</label>
+        <input type="password" class="input_f" placeholder="Password" name="password" value="{{request.form.password }}" autocomplete="off" required><br>
+        <div class="container">
+            <input type="submit" name="log" class="input_f_button login_button" value="Login">
+            <input type="submit" name="reg" class="input_f_button" value="Register">
+        </div>
+    </form> 
+</body>
+
+</html>

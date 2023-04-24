@@ -1,0 +1,6 @@
+pip install google-search-results
+pip install flask
+pip install bs4
+pip install requests
+pip install parsel
+pip install favicon

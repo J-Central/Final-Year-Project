@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Shop Hop</title>
+    <link rel="stylesheet" href="..\static\style.css">
+    <script type="text/javascript" src="../static/script.js"></script>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.svg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <dialog class="bulk_item" id="bulk_item">
+        <form action="{{ url_for('bulk_item') }}" method="POST">
+            <label for="iname">Item name:</label><br>
+            <input type="text" id="input_f" name="item_name" autocomplete="off"><br> 
+            <input type="submit" id="input_f_button" value="Submit" onclick="this.style.display = 'none'"><br>
+            <label for="iname">Show ads:</label>
+            <input type="checkbox" class="ads_check" name="ads_check"> 
+          </form> 
+    </dialog>
+            
+    <div class="link_container">
+        <div class="store_scanner">
+        <h1 class="store_scanner">Shop Hop</h1>
+        <img src="../static/assets/logo.svg" alt="Shop Scanner Logo" class="logo">
+        </div>
+        <a href="#" onclick="doesUserWantToLogout()" class="logout">{{username[0].upper()}}</a>
+        <input type="checkbox" class="select_all" name="select_all" onclick="selectAll(this)">
+        <img src="../static/assets/bin.svg" alt="Bin Icon" class="bin" onclick="deleteItem()">
+        <form action="{{ url_for('refresh_all') }}" class="reload" method="POST">
+            <button class="hidden_b" type="submit">
+                <img src="../static/assets/reload.svg" alt="Reload Icon" class="reload_bulk">
+            </button>
+        </form>
+        <img onclick="showModal('bulk_item')" src="../static/assets/mag.svg" alt="Bulk Icon" class="reload">
+        <div class="tags tag_store">Store</div>
+        <div class="tags purchased">Purchased</div>
+        <div class="tags link">Item-Link</div>
+        <div onclick="order_old(this)" class="tags cursorchange">Old Price</div>
+        <div onclick="order_new(this)" class="tags cursorchange" id="new_price">New Price</div>
+        <div class="nav_break"></div>
+        
+        <div class="shop_items" id="item_list">
+            <form class="selector" name="check" action="{{ url_for('delete_item') }}" method="POST">
+                {% for row in rows %}
+                <div class="shop_item" name="shop_item">
+                    <input type="checkbox" class="select_item" name="select_item" value="{{row['item_url']}}">
+                    <div></div>
+                    {% if row['product_id'] != '' %}
+                        <button onclick="refresh_item(this)" class="hidden_b" type="button">
+                            <img onclick="" src="../static/assets/reload.svg" alt="Reload Icon" class="reload_single">
+                        </button>
+                    {% else %}
+                        <div></div>
+                    {% endif %}
+                    <img src="{{row['favicon_link']}}" alt="Shop Icon" class="favicon" onerror="this.src='../static/assets/error.svg'">
+                    <div class="item_tags tag_store">{{row["shop_name"]}}</div>
+                    {% if row['purchased'] == '1' %}    
+                        <img data-value="{{row['item_url']}}" src="../static/assets/check.svg" alt="Purchased Icon" class=" item_tags purchased_icon" onclick="purchased(this)">
+                    {% else %}
+                        <img data-value="{{row['item_url']}}" src="../static/assets/cross.svg" alt="Purchased Icon" class=" item_tags purchased_icon" onclick="purchased(this)">
+                    {% endif %}
+                    <div class="item_tags link"><a href="{{row['item_url']}}" class="link-c" target="_blank">{{row["item_name"]}}</a> </div>
+                    <div class="item_tags old_price" data-name="{{row['old_price']}}">£{{format(row["old_price"],'.2f')}}</div>
+                    <div class="item_tags new_price" data-name="{{row['new_price'] or 10**10}}">
+                        {% if not row["new_price"] %}
+                        n/a
+                        {% else %}
+                        £{{format(row["new_price"],'.2f')}}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+        
+        
+    </div>
+</body>
+<script>
+function order_old() {
+    var $wrapper = $('.selector');
+    $wrapper.find('.shop_item').sort(function (a, b) {
+        x= $(a).find(".old_price")[0].dataset.name;
+        y= $(b).find(".old_price")[0].dataset.name;
+        console.log(x , y);
+        return +x - +y;
+    }) 
+.appendTo($wrapper);
+}
+
+function order_new() {
+    var $wrapper = $('.selector');
+    $wrapper.find('.shop_item').sort(function (a, b) {
+        x= $(a).find(".new_price")[0].dataset.name;
+        y= $(b).find(".new_price")[0].dataset.name;
+        console.log(x , y);
+        return +x - +y;
+    }) 
+.appendTo($wrapper);
+}
+</script>
+</html>
