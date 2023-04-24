@@ -98,7 +98,7 @@ def single_trigger_update(product_id, new_price, old_price):
         }
         search = GoogleSearch(params)
         results = search.get_dict()
-        product_results = results["sellers_results"]["online_sellers"]
+        product_results = results["sellers_results"]["online_sellers"] if "sellers_results" in results else []
         price = new_price if new_price else old_price    
         best_price = price
         product_link = ""
