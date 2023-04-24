@@ -73,3 +73,10 @@ body {
 .login_button {
     margin-right: 2rem;
 }
+
+.error {
+    color: rgb(129, 11, 11);
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 600;
+}
