@@ -19,6 +19,10 @@
             <input type="submit" name="log" class="input_f_button login_button" value="Login">
             <input type="submit" name="reg" class="input_f_button" value="Register">
         </div>
+        {% for message in get_flashed_messages() %}
+            <div class="error">{{message}}</div>
+
+        {% endfor %}
     </form> 
 </body>
 
